@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <meta name="generator" content="Jekyll v3.9.0">
+    <meta property="og:title" content="Controllable Context-aware Conversational Speech Synthesis">
+    <meta property="og:locale" content="en_US">
+    <link rel="canonical" href="https://syang1993.github.io/spon_tts/">
+    <meta property="og:url" content="https://syang1993.github.io/spon_tts/">
+    <meta name="twitter:card" content="summary">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1023.0" data-gr-ext-installed="">
+    <section class="page-header">
+
+    </section>
+
+    <section class="main-content">
+        <h2 id="abstract">Zero-shot Singing Voice Conversion</h2>
+        <script>
+            let mode = ["vc/unseen"];
+            mode.forEach((mode, i) => {
+                for (let clip = 1; clip <= 8; clip++) {
+                    document.write(`
+                     <h3>${mode[0].toLocaleUpperCase()+mode.slice(1)} ${clip}</h3>   
+                                <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: center"><strong>Source</strong></th>
+                        <th style="text-align: center"><strong>Target</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left"><audio src="audios/${mode}/input/src/${clip}.wav"
+                                controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/input/tar/${clip}.wav" 
+                                controls="" preload=""></audio></td>
+                    </tr>
+                </tbody>
+                <thead
+                    <tr>
+                        <th style="text-align: center"><strong>SaMoye</strong></th>
+                        <th style="text-align: center"><strong>HQ-SVC</strong></th>
+                        <th style="text-align: center"><strong>HQ-SVC w/o f0 loss</strong></th>
+                        <th style="text-align: center"><strong>HQ-SVC w/o spk loss</strong></th>
+                        <th style="text-align: center"><strong>FACodec-SVC</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m0/${clip}.wav"
+                                controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m1/${clip}.wav"
+                            controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m2/${clip}.wav"
+                            controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m3/${clip}.wav"
+                            controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m4/${clip}.wav"
+                            controls="" preload=""></audio></td>                          
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+                `)
+                }
+            })
+
+        </script>
+
+
+        <h2 id="abstract">Zero-shot Voice Super-resolution</h2>
+
+        <script>
+                mode = 'sr/unseen'
+                for (let clip = 1; clip <= 8; clip++) {
+                    document.write(`
+                     <h3>Singing ${mode[0].toLocaleUpperCase()+mode.slice(1)} ${clip}</h3>   
+                                <table>
+                <thead>
+                    <tr>
+                        <th style="text-align: center"><strong>GT</strong></th>
+                        <th style="text-align: center"><strong>Downsampled</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left"><audio src="audios/${mode}/input/ori/${clip}.wav"
+                                controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/input/ds/${clip}.wav" 
+                                controls="" preload=""></audio></td>
+                    </tr>
+                </tbody>
+                <thead
+                    <tr>
+                        <th style="text-align: center"><strong>AudioSR</strong></th>
+                        <th style="text-align: center"><strong>HQ-SVC</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/m0/${clip}.wav"
+                                controls="" preload=""></audio></td>
+                        <td style="text-align: left"><audio src="audios/${mode}/output/m1/${clip}.wav"
+                            controls="" preload=""></audio></td>                       
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+                `)
+                }
+        </script>
+        <script>
+            mode = 'sr/unseen'
+            for (let clip = 9; clip <= 16; clip++) {
+                document.write(`
+                 <h3>Speech ${mode[0].toLocaleUpperCase()+mode.slice(1)}${clip}</h3>   
+                            <table>
+            <thead>
+                <tr>
+                    <th style="text-align: center"><strong>GT</strong></th>
+                    <th style="text-align: center"><strong>Downsampled</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left"><audio src="audios/${mode}/input/ori/${clip}.wav"
+                            controls="" preload=""></audio></td>
+                    <td style="text-align: left"><audio src="audios/${mode}/input/ds/${clip}.wav" 
+                            controls="" preload=""></audio></td>
+                </tr>
+            </tbody>
+            <thead
+                <tr>
+                    <th style="text-align: center"><strong>AudioSR</strong></th>
+                    <th style="text-align: center"><strong>HQ-SVC</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left"><audio src="audios/${mode}/output/m0/${clip}.wav"
+                            controls="" preload=""></audio></td>
+                    <td style="text-align: left"><audio src="audios/${mode}/output/m1/${clip}.wav"
+                        controls="" preload=""></audio></td>                       
+                </tr>
+            </tbody>
+        </table>
+        <br>
+            `)
+            }
+    </script>
+    </section>
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
+
+</html>
