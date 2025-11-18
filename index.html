@@ -1,140 +1,527 @@
 <!DOCTYPE html>
 <html lang="en-US">
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-
     <meta name="generator" content="Jekyll v3.9.0">
-    <meta property="og:title" content="Controllable Context-aware Conversational Speech Synthesis">
+    <meta property="og:title" content="HQ-SVC: Towards High-Quality Zero-Shot Singing Voice Conversion in Low-Resource Scenarios">
     <meta property="og:locale" content="en_US">
     <link rel="canonical" href="https://syang1993.github.io/spon_tts/">
     <meta property="og:url" content="https://syang1993.github.io/spon_tts/">
     <meta name="twitter:card" content="summary">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
+    <meta name="description" content="HQ-SVC: Efficient Framework for Zero-Shot SVC and Voice Super-Resolution">
+    <meta name="keywords" content="singing voice conversion, zero-shot, voice super-resolution, audio synthesis">
+    
+    <!-- 添加外部资源 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Google Sans', 'Noto Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+        
+        .container-wider {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .shadow-card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .section {
+            padding: 2rem 0;
+        }
+        
+        /* 头部样式 */
+        .hero {
+            background: #ffffff;
+            padding: 3rem 0;
+            margin-bottom: 1rem;
+        }
+        
+        .publication-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+        
+        .publication-authors {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .author-block {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .badges {
+            margin: 1.5rem 0;
+        }
+        
+        /* 徽章样式 - 与参考网站一致 */
+        .badge {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .badge:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .badge-arxiv {
+            background-color: #b31b1b;
+            color: white;
+        }
+        
+        .badge-github {
+            background-color: #333;
+            color: white;
+        }
+        
+        /* 表格样式 - 与参考网站一致 */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: center !important; /* 强制居中 */
+            vertical-align: middle !important; /* 垂直居中 */
+            border: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background-color: #3182ce;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+        
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        
+        /* 音频控件适配 */
+        td audio {
+            width: 100%;
+            max-width: 170px;
+            margin: 0 auto !important; /* 确保音频控件居中 */
+            display: block !important;
+            box-sizing: border-box;
+        }
+        
+        /* 标题样式 */
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3182ce;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        /* 摘要样式 */
+        .abstract {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4a5568;
+            text-align: justify;
+        }
+        
+        /* 引用样式 */
+        .bibtex {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid #e0e0e0;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #f8f8f8;
+            color: #666;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* 模型图样式 */
+        .model-figure {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .model-image {
+            max-width: 100%;
+            height: auto;
+            /* border-radius: 8px; */
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            margin-bottom: 1rem;
+        }
+        
+        .model-caption {
+            font-size: 1rem;
+            color: #666;
+            font-style: italic;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1023px) {
+            .container-wider {
+                max-width: 95%;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+                text-align: center !important;
+                vertical-align: middle !important;
+            }
+            
+            .publication-title {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .shadow-card {
+                padding: 1.5rem;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+                text-align: center !important;
+                vertical-align: middle !important;
+            }
+            
+            audio {
+                max-width: 140px;
+                margin: 0 auto !important;
+            }
+            
+            .publication-title {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .bibtex {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+            
+            .model-caption {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 
-<body data-new-gr-c-s-check-loaded="14.1023.0" data-gr-ext-installed="">
-    <section class="page-header">
-
+<body>
+    <!-- 头部区域 -->
+    <section class="hero">
+        <div class="container-wider">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 publication-title">HQ-SVC</h1>
+                    <h2 class="subtitle is-3">
+                        Towards High-Quality Zero-Shot Singing Voice Conversion in Low-Resource Scenarios
+                    </h2>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block">Bingsong Bai,</span>
+                        <span class="author-block">Yizhong Geng,</span>
+                        <span class="author-block">Fengping Wang,</span>
+                        <span class="author-block">Cong Wang,</span>
+                        <span class="author-block">Puyuan Guo,</span>
+                        <span class="author-block">Yingming Gao,</span>
+                        <span class="author-block">Ya Li<sup>*</sup></span>
+                    </div>
+                    <div class="is-size-6 publication-authors">
+                        <span class="author-block">Beijing University of Posts and Telecommunications, China</span><br>
+                        <span class="author-block">*Corresponding author</span>
+                    </div>
+                    <div class="badges">
+                        <a href="https://arxiv.org/abs/2511.08496" class="badge badge-arxiv" target="_blank">
+                            <i class="ai ai-arxiv"></i> arXiv:2511.08496
+                        </a>
+                        <a href="https://github.com/ShawnPi233/HQ-SVC" class="badge badge-github" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="main-content">
-        <h2 id="abstract">Zero-shot Singing Voice Conversion</h2>
-        <script>
-            let mode = ["vc/unseen"];
-            mode.forEach((mode, i) => {
-                for (let clip = 1; clip <= 8; clip++) {
-                    document.write(`
-                     <h3>${mode[0].toLocaleUpperCase()+mode.slice(1)} ${clip}</h3>   
-                                <table>
-                <thead>
-                    <tr>
-                        <th style="text-align: center"><strong>Source</strong></th>
-                        <th style="text-align: center"><strong>Target</strong></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: left"><audio src="audios/${mode}/input/src/${clip}.wav"
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/input/tar/${clip}.wav" 
-                                controls="" preload=""></audio></td>
-                    </tr>
-                </tbody>
-                <thead
-                    <tr>
-                        <th style="text-align: center"><strong>FACodec-SVC</strong></th>
-                        <th style="text-align: center"><strong>SaMoye</strong></th>
-                        <th style="text-align: center"><strong>HQ-SVC (Ours)</strong></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m4/${clip}.wav"
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m0/${clip}.wav"
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/output/s2t/m1/${clip}.wav"
-                            controls="" preload=""></audio></td>
-                                                  
-                    </tr>
-                </tbody>
-            </table>
-            <br>
-                `)
+    <div class="container-wider">
+        <!-- 摘要部分 -->
+        <section class="section">
+            <div class="shadow-card">
+                <h2 class="title is-3">Abstract</h2>
+                <div class="abstract">
+                    <p>
+                        Zero-shot singing voice conversion (SVC) transforms a source singer's timbre to an unseen target speaker's voice while preserving melodic content without fine-tuning. Existing methods model speaker timbre and vocal content separately, losing essential acoustic information that degrades output quality while requiring significant computational resources.
+                        To overcome these limitations, we propose HQ-SVC, an efficient framework for high-quality zero-shot SVC. HQ-SVC first extracts jointly content and speaker features using a decoupled codec. It then enhances fidelity through pitch and volume modeling, preserving critical acoustic information typically lost in separate modeling approaches, and progressively refines outputs via differentiable signal processing and diffusion techniques.
+                        Evaluations confirm HQ-SVC significantly outperforms state-of-the-art zero-shot SVC methods in conversion quality and efficiency. Beyond voice conversion, HQ-SVC achieves superior voice naturalness compared to specialized audio super-resolution methods while natively supporting voice super-resolution tasks.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模型图部分 -->
+        <section class="section">
+            <div class="shadow-card">
+                <h2 class="title is-3 has-text-left">Model Architecture</h2>
+                <div class="model-figure">
+                    <img src="statics/hq-svc.png" alt="HQ-SVC Model Architecture" class="model-image">
+                    <p class="model-caption">
+                        Figure 1: Overall architecture of the proposed HQ-SVC and the architecture of the proposed EVA module.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Zero-shot Singing Voice Conversion 表格 -->
+        <section id="singing-vc" class="section">
+            <div class="container-wider">
+                <div class="shadow-card">
+                    <h2 class="title is-3 has-text-left">Zero-shot Singing Voice Conversion (SVC)</h2>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;"><strong>Source</strong></th>
+                                    <th style="width: 20%;"><strong>Target</strong></th>
+                                    <th style="width: 20%;"><strong>FACodec-SVC</strong></th>
+                                    <th style="width: 20%;"><strong>SaMoye-SVC</strong></th>
+                                    <th style="width: 20%;"><strong>HQ-SVC (Ours)</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <script>
+                                    let mode = "audios/vc/unseen";
+                                    for (let clip = 1; clip <= 8; clip++) {
+                                        document.write(`
+                                        <tr>
+                                            <td><audio src="${mode}/input/src/${clip}.wav" controls="" preload=""></audio></td>
+                                            <td><audio src="${mode}/input/tar/${clip}.wav" controls="" preload=""></audio></td>
+                                            <td><audio src="${mode}/output/s2t/m4/${clip}.wav" controls="" preload=""> </td>
+                                            <td><audio src="${mode}/output/s2t/m0/${clip}.wav" controls="" preload=""> <|card|>:</td>
+                                            <td><audio src="${mode}/output/s2t/m1/${clip}.wav" controls="" preload="">  </audio></td>
+                                        </tr>
+                                        `);
+                                    }
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Zero-shot Singing Voice Super-resolution 表格 -->
+        <section id="singing-sr" class="section">
+            <div class="container-wider">
+                <div class="shadow-card">
+                    <h2 class="title is-3 has-text-left">Zero-shot Singing Voice Super-resolution</h2>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;"><strong>GT (44.1 kHz)</strong></th>
+                                    <th style="width: 25%;"><strong>Downsampled (16 kHz)</strong></th>
+                                    <th style="width: 25%;"><strong>AudioSR</strong></th>
+                                    <th style="width: 25%;"><strong>HQ-SVC (Ours)</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <script>
+                                    let singing_sr_mode = 'audios/sr/unseen';
+                                    for (let clip = 1; clip <= 8; clip++) {
+                                        document.write(`
+                                        <tr>
+                                            <td><audio src="${singing_sr_mode}/input/ori/${clip}.wav" controls="" preload="">  </audio></td>
+                                            <td><audio src="${singing_sr_mode}/input/ds/${clip}.wav" controls="" preload="">  </td>
+                                            <td><audio src="${singing_sr_mode}/output/m0/${clip}.wav" controls="" preload="">   </td>
+                                            <td><audio src="${singing_sr_mode}/output/m1/${clip}.wav" controls="" preload="">    <|card|>:</td>
+                                        </tr>
+                                        `);
+                                    }
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Zero-shot Speech Voice Super-resolution 表格 -->
+        <section id="speech-sr" class="section">
+            <div class="container-wider">
+                <div class="shadow-card">
+                    <h2 class="title is-3 has-text-left">Zero-shot Speech Voice Super-resolution</h2>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;"><strong>GT (44.1 kHz)</strong></th>
+                                    <th style="width: 25%;"><strong>Downsampled (16 kHz)</strong></th>
+                                    <th style="width: 25%;"><strong>AudioSR</strong></th>
+                                    <th style="width: 25%;"><strong>HQ-SVC (Ours)</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <script>
+                                    let speech_sr_mode = 'audios/sr/unseen';
+                                    for (let clip = 9; clip <= 16; clip++) {
+                                        document.write(`
+                                        <tr>
+                                            <td><audio src="${speech_sr_mode}/input/ori/${clip}.wav" controls="" preload="">    <|card|>:</td>
+                                            <td><audio src="${speech_sr_mode}/input/ds/${clip}.wav" controls="" preload="">     <RichMediaReference></td>
+                                            <td><audio src="${speech_sr_mode}/output/m0/${clip}.wav" controls="" preload="">     <|card|>:</td>
+                                            <td><audio src="${speech_sr_mode}/output/m1/${clip}.wav" controls="" preload="">     <|card|>:</td>
+                                        </tr>
+                                        `);
+                                    }
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BibTeX引用部分 -->
+        <section id="BibTeX" class="section">
+            <div class="container-wider">
+                <div class="shadow-card">
+                    <h2 class="title is-3 has-text-left">BibTeX</h2>
+                    <div class="bibtex">
+                        <pre><code>@article{bai2025hq,
+  title={HQ-SVC: Towards High-Quality Zero-Shot Singing Voice Conversion in Low-Resource Scenarios},
+  author={Bai, Bingsong and Geng, Yizhong and Wang, Fengping and Wang, Cong and Guo, Puyuan and Gao, Yingming and Li, Ya},
+  journal={arXiv preprint arXiv:2511.08496},
+  year={2025}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 表格响应式调整
+        window.addEventListener('resize', function() {
+            adjustTableLayout();
+        });
+        
+        function adjustTableLayout() {
+            const tables = document.querySelectorAll('.table-container table');
+            tables.forEach(table => {
+                if (window.innerWidth < 768) {
+                    table.style.minWidth = '600px';
+                } else {
+                    table.style.minWidth = '800px';
                 }
-            })
-
-        </script>
-
-
-        <h2 id="abstract">Zero-shot Voice Super-resolution</h2>
-
-        <script>
-                mode = 'sr/unseen'
-                for (let clip = 1; clip <= 8; clip++) {
-                    document.write(`
-                     <h3>Singing ${mode[0].toLocaleUpperCase()+mode.slice(1)} ${clip}</h3>   
-                                <table>
-                <thead>
-                    <tr>
-                        <th style="text-align: center"><strong>GT</strong></th>
-                        <th style="text-align: center"><strong>Downsampled</strong></th>
-                        <th style="text-align: center"><strong>AudioSR</strong></th>
-                        <th style="text-align: center"><strong>HQ-SVC (Ours)</strong></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: left"><audio src="audios/${mode}/input/ori/${clip}.wav"
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/input/ds/${clip}.wav" 
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/output/m0/${clip}.wav"
-                                controls="" preload=""></audio></td>
-                        <td style="text-align: left"><audio src="audios/${mode}/output/m1/${clip}.wav"
-                            controls="" preload=""></audio></td>  
-                    </tr>
-                </tbody>
-            </table>
-            <br>
-                `)
-                }
-        </script>
-        <script>
-            mode = 'sr/unseen'
-            for (let clip = 9; clip <= 16; clip++) {
-                document.write(`
-                 <h3>Speech ${mode[0].toLocaleUpperCase()+mode.slice(1)}${clip}</h3>   
-                            <table>
-            <thead>
-                <tr>
-                    <th style="text-align: center"><strong>GT</strong></th>
-                    <th style="text-align: center"><strong>Downsampled</strong></th>
-                    <th style="text-align: center"><strong>AudioSR</strong></th>
-                    <th style="text-align: center"><strong>HQ-SVC (Ours)</strong></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align: left"><audio src="audios/${mode}/input/ori/${clip}.wav"
-                            controls="" preload=""></audio></td>
-                    <td style="text-align: left"><audio src="audios/${mode}/input/ds/${clip}.wav" 
-                            controls="" preload=""></audio></td>
-                    <td style="text-align: left"><audio src="audios/${mode}/output/m0/${clip}.wav"
-                            controls="" preload=""></audio></td>
-                    <td style="text-align: left"><audio src="audios/${mode}/output/m1/${clip}.wav"
-                        controls="" preload=""></audio></td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-            `)
-            }
+            });
+        }
+        
+        // 初始化表格布局
+        adjustTableLayout();
     </script>
-    </section>
-</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
-
+</body>
 </html>
